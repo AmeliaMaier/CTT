@@ -1,11 +1,18 @@
 package combinationtestingtool;
 
+import static java.nio.file.Files.list;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import static java.util.Collections.list;
+import java.util.Comparator;
+
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author Lia
@@ -119,6 +126,52 @@ public class JFrameCombinationTestingTool extends javax.swing.JFrame
     private void jButtonRunActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButtonRunActionPerformed
     {//GEN-HEADEREND:event_jButtonRunActionPerformed
         // TODO add your handling code here:
+        //String lines[] = String.split("\\r?\\n");
+
+        String userInput = this.jTextAreaTextInterface.getText();
+        String[] rawUserInputArray = userInput.split("\\n");
+        ArrayList<String[]> variableList = new ArrayList<>();
+        String[] variableName = new String[1];
+        String[] singleVariableInfoArray;
+        String[] singleVariableValueArray;
+        String[] singleVariableOrganizedArray;
+        for (String variable : rawUserInputArray)
+        {
+            singleVariableInfoArray = variable.split(":");
+            variableName[0] = singleVariableInfoArray[0];
+            singleVariableValueArray = singleVariableInfoArray[1].split(",");
+            singleVariableOrganizedArray = Arrays.copyOf(variableName, variableName.length + singleVariableValueArray.length);
+            System.arraycopy(singleVariableValueArray, 0, singleVariableOrganizedArray, variableName.length, singleVariableValueArray.length);
+
+            for (int x = 0; x < singleVariableOrganizedArray.length; x++)
+            {
+                singleVariableOrganizedArray[x] = singleVariableOrganizedArray[x].trim();
+            }
+            variableList.add(singleVariableOrganizedArray);
+        }
+        //sort
+        Collections.sort(variableList, new Comparator<String[]>()
+        {
+
+            @Override
+            public int compare(String[] strings, String[] otherStrings)
+            {
+
+                if (strings.length > otherStrings.length)
+                {
+                    return 1;
+                } else if (strings.length < otherStrings.length)
+                {
+                    return -1;
+                }
+
+                return 0;
+            }
+        });
+
+        //list tests to run
+        //output
+
     }//GEN-LAST:event_jButtonRunActionPerformed
 
     /**
@@ -139,20 +192,25 @@ public class JFrameCombinationTestingTool extends javax.swing.JFrame
                 {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex)
         {
-            java.util.logging.Logger.getLogger(JFrameCombinationTestingTool.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JFrameCombinationTestingTool.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex)
         {
-            java.util.logging.Logger.getLogger(JFrameCombinationTestingTool.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JFrameCombinationTestingTool.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex)
         {
-            java.util.logging.Logger.getLogger(JFrameCombinationTestingTool.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JFrameCombinationTestingTool.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex)
         {
-            java.util.logging.Logger.getLogger(JFrameCombinationTestingTool.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JFrameCombinationTestingTool.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
