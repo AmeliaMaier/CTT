@@ -170,6 +170,51 @@ public class JFrameCombinationTestingTool extends javax.swing.JFrame
         });
 
         //list tests to run
+         /*
+        Create a list of arrays 
+        each array has length = #VariableNames
+        first array stores names in order
+        each other array holds variable values for one test
+        */
+        /*
+        remove the variable names from the first position of each list in variableList
+        Place variable names in the first array in the testArrayList
+        list 1 goes into position 1, list 2 goes into position 2... ect
+        */
+        /*
+        Fill the first and second position of each array with the values for the first and second variable
+        needs to be all-pairs
+        List each value of variable 1 as many times as there are values for variable 2
+        List out the values for variable 2 in order as many times as there are values for variable 1
+        */
+        /*
+        loop:
+        if more variables
+        fill out a list with all the pairs needed for next variable with each variable that came before it
+        format: variable value 1,variable value 2
+        set position1 variable to 0
+        set position2 variable to 0
+        set matchRequired to # of variables before this variable
+        //loop:
+        //if list not empty
+        //for value of variable 2 at position1 in list, 
+          if matches found = matchRequired for position2 in testArrayList (note empty space  = match)
+            add value of variable 2 at position1 in list to testArrayList
+            remove matches from listOfAllPairs
+          else if position1 < listOfAllPairs.length-1
+            position1++
+          else if position2 < testArrayList.length-1
+            position1 = 0
+            position2 ++
+          else if matchRequired >1
+            matchRequired --
+          else
+            add a new row
+            position1 = 0
+            position2 ++
+        //       
+        */           
+        
         //output
 
     }//GEN-LAST:event_jButtonRunActionPerformed
