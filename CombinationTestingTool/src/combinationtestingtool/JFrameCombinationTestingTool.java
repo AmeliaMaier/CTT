@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import static java.util.Collections.list;
 import java.util.Comparator;
+import java.util.List;
 
 
 /*
@@ -125,42 +126,42 @@ public class JFrameCombinationTestingTool extends javax.swing.JFrame
 
     private void jButtonRunActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButtonRunActionPerformed
     {//GEN-HEADEREND:event_jButtonRunActionPerformed
-        // TODO add your handling code here:
-        //String lines[] = String.split("\\r?\\n");
-
         String userInput = this.jTextAreaTextInterface.getText();
         String[] rawUserInputArray = userInput.split("\\n");
-        ArrayList<String[]> variableList = new ArrayList<>();
-        String[] variableName = new String[1];
+        ArrayList<List<String>> variableList = new ArrayList<>();
+        String variableName;
         String[] singleVariableInfoArray;
         String[] singleVariableValueArray;
-        String[] singleVariableOrganizedArray;
+        List<String> singleVariableOrganizedList = new ArrayList<String>();
         for (String variable : rawUserInputArray)
         {
             singleVariableInfoArray = variable.split(":");
-            variableName[0] = singleVariableInfoArray[0];
+            variableName = singleVariableInfoArray[0];
             singleVariableValueArray = singleVariableInfoArray[1].split(",");
-            singleVariableOrganizedArray = Arrays.copyOf(variableName, variableName.length + singleVariableValueArray.length);
-            System.arraycopy(singleVariableValueArray, 0, singleVariableOrganizedArray, variableName.length, singleVariableValueArray.length);
-
-            for (int x = 0; x < singleVariableOrganizedArray.length; x++)
+            singleVariableOrganizedList.add(variableName);
+            for(String value: singleVariableValueArray)
             {
-                singleVariableOrganizedArray[x] = singleVariableOrganizedArray[x].trim();
+             singleVariableOrganizedList.add(value);
             }
-            variableList.add(singleVariableOrganizedArray);
+            
+            for (int x = 0; x < singleVariableOrganizedList.size(); x++)
+            {
+                singleVariableOrganizedList.set(x, singleVariableOrganizedList.get(x).trim());
+            }
+            variableList.add(singleVariableOrganizedList);
         }
         //sort
-        Collections.sort(variableList, new Comparator<String[]>()
+        Collections.sort(variableList, new Comparator<List<String>>()
         {
 
             @Override
-            public int compare(String[] strings, String[] otherStrings)
+            public int compare(List<String> strings, List<String> otherStrings)
             {
 
-                if (strings.length > otherStrings.length)
+                if (strings.size() > otherStrings.size())
                 {
                     return 1;
-                } else if (strings.length < otherStrings.length)
+                } else if (strings.size() < otherStrings.size())
                 {
                     return -1;
                 }
@@ -168,25 +169,44 @@ public class JFrameCombinationTestingTool extends javax.swing.JFrame
                 return 0;
             }
         });
-
-        //list tests to run
          /*
         Create a list of arrays 
         each array has length = #VariableNames
         first array stores names in order
         each other array holds variable values for one test
         */
+        ArrayList<String[]> testArrayList = new ArrayList<>();
+        String[] rowForTestArrayList = new String[variableList.size()];        
         /*
         remove the variable names from the first position of each list in variableList
         Place variable names in the first array in the testArrayList
         list 1 goes into position 1, list 2 goes into position 2... ect
         */
+        singleVariableOrganizedList = new ArrayList<String>(); 
+        for(int x = 0; x < variableList.size(); x++)
+        {
+           singleVariableOrganizedList = variableList.get(x);
+           rowForTestArrayList[x] = singleVariableOrganizedList.remove(0);
+           variableList.set(x, singleVariableOrganizedList);
+        }
+        testArrayList.add(rowForTestArrayList);
+        rowForTestArrayList = new String[variableList.size()]; 
         /*
         Fill the first and second position of each array with the values for the first and second variable
         needs to be all-pairs
         List each value of variable 1 as many times as there are values for variable 2
         List out the values for variable 2 in order as many times as there are values for variable 1
         */
+        List<String> variableAValuesList = variableList.get(0);
+        List<String> variableBValuesList = variableList.get(1);
+        List<String> allPairsList = new ArrayList<String>();
+        for(int x = 0; x < variableBValuesList.size(); x++)
+        {
+            for(int y = 0; y <variableAValuesList.size(); y++)
+            {
+                allPairsList.add(variableAValuesList.get(x)+","+variableBValuesList.get(y));
+            }
+        }
         /*
         loop:
         if more variables
