@@ -139,11 +139,11 @@ public class JFrameCombinationTestingTool extends javax.swing.JFrame
             variableName = singleVariableInfoArray[0];
             singleVariableValueArray = singleVariableInfoArray[1].split(",");
             singleVariableOrganizedList.add(variableName);
-            for(String value: singleVariableValueArray)
+            for (String value : singleVariableValueArray)
             {
-             singleVariableOrganizedList.add(value);
+                singleVariableOrganizedList.add(value);
             }
-            
+
             for (int x = 0; x < singleVariableOrganizedList.size(); x++)
             {
                 singleVariableOrganizedList.set(x, singleVariableOrganizedList.get(x).trim());
@@ -169,74 +169,112 @@ public class JFrameCombinationTestingTool extends javax.swing.JFrame
                 return 0;
             }
         });
-         /*
-        Create a list of arrays 
-        each array has length = #VariableNames
-        first array stores names in order
-        each other array holds variable values for one test
-        */
-        ArrayList<String[]> testArrayList = new ArrayList<>();
-        String[] rowForTestArrayList = new String[variableList.size()];        
         /*
-        remove the variable names from the first position of each list in variableList
-        Place variable names in the first array in the testArrayList
-        list 1 goes into position 1, list 2 goes into position 2... ect
-        */
-        singleVariableOrganizedList = new ArrayList<String>(); 
-        for(int x = 0; x < variableList.size(); x++)
+         Create a list of arrays 
+         each array has length = #VariableNames
+         first array stores names in order
+         each other array holds variable values for one test
+         */
+        ArrayList<String[]> testArrayList = new ArrayList<>();
+        String[] rowForTestArrayList = new String[variableList.size()];
+        /*
+         remove the variable names from the first position of each list in variableList
+         Place variable names in the first array in the testArrayList
+         list 1 goes into position 1, list 2 goes into position 2... ect
+         */
+        singleVariableOrganizedList = new ArrayList<String>();
+        for (int x = 0; x < variableList.size(); x++)
         {
-           singleVariableOrganizedList = variableList.get(x);
-           rowForTestArrayList[x] = singleVariableOrganizedList.remove(0);
-           variableList.set(x, singleVariableOrganizedList);
+            singleVariableOrganizedList = variableList.get(x);
+            rowForTestArrayList[x] = singleVariableOrganizedList.remove(0);
+            variableList.set(x, singleVariableOrganizedList);
         }
         testArrayList.add(rowForTestArrayList);
-        rowForTestArrayList = new String[variableList.size()]; 
-        /*
-        Fill the first and second position of each array with the values for the first and second variable
-        needs to be all-pairs
-        List each value of variable 1 as many times as there are values for variable 2
-        List out the values for variable 2 in order as many times as there are values for variable 1
-        */
-        List<String> variableAValuesList = variableList.get(0);
-        List<String> variableBValuesList = variableList.get(1);
-        List<String> allPairsList = new ArrayList<String>();
-        for(int x = 0; x < variableBValuesList.size(); x++)
+        rowForTestArrayList = new String[variableList.size()];
+        //set all spaces in array to " " for future sorting needs
+        for(int x = 0; x < variableList.size(); x++)
         {
-            for(int y = 0; y <variableAValuesList.size(); y++)
-            {
-                allPairsList.add(variableAValuesList.get(x)+","+variableBValuesList.get(y));
-            }
+            rowForTestArrayList[x] = " ";
         }
         /*
-        loop:
-        if more variables
-        fill out a list with all the pairs needed for next variable with each variable that came before it
-        format: variable value 1,variable value 2
-        set position1 variable to 0
-        set position2 variable to 0
-        set matchRequired to # of variables before this variable
-        //loop:
-        //if list not empty
-        //for value of variable 2 at position1 in list, 
-          if matches found = matchRequired for position2 in testArrayList (note empty space  = match)
-            add value of variable 2 at position1 in list to testArrayList
-            remove matches from listOfAllPairs
-          else if position1 < listOfAllPairs.length-1
-            position1++
-          else if position2 < testArrayList.length-1
-            position1 = 0
-            position2 ++
-          else if matchRequired >1
-            matchRequired --
-          else
-            add a new row
-            position1 = 0
-            position2 ++
-        //       
-        */           
-        
-        //output
+         List each value of variable 1 as many times as there are values for variable 2
+         List out the values for variable 2 in order as many times as there are values for variable 1
+         */
+        int variableListPosition = 1;
+        int secondaryVariablePosition = 0;
+        List<String> variableAValuesList;        
+        List<String> variableBValuesList;        
+        ArrayList<List> allPairsArrayList = new ArrayList<>();
+        List<String> singleVariableAllPairsList = new ArrayList<String>();
+                
+        while (variableListPosition < variableList.size())
+        {
+            variableBValuesList = variableList.get(variableListPosition);
+            variableAValuesList = variableList.get(secondaryVariablePosition);
+            for (int x = 0; x < variableBValuesList.size(); x++)
+            {
+                for (int y = 0; y < variableAValuesList.size(); y++)
+                {
+                    if(variableListPosition!=1){
+                    singleVariableAllPairsList.add(variableAValuesList.get(x) + "," + variableBValuesList.get(y));
+                    }else{
+                        rowForTestArrayList[0] = variableAValuesList.get(x);
+                        rowForTestArrayList[1] = variableBValuesList.get(y);
+                        testArrayList.add(rowForTestArrayList);
+                    }
+                }
+            }
+            if(variableListPosition!=1){
+                allPairsArrayList.add(singleVariableAllPairsList);
+            }
+            if (secondaryVariablePosition == 0)
+            {
+                variableListPosition++;
+                secondaryVariablePosition = variableListPosition - 1;
+            } else
+            {
+                secondaryVariablePosition--;
+            }
+        }
 
+        /*
+         set position1 variable to 0
+         set position2 variable to 0
+         int matchRequired = 0; set matchRequired to # of variables before this variable*/
+        int variableAPosition = 0;
+        int variableBPosition = 0;
+        
+        //if list not empty
+        /*loop:
+             //for value of variable 2 at position1 in list, 
+             if matches found = matchRequired for position2 in testArrayList (note empty space  = match)
+             add value of variable 2 at position1 in list to testArrayList
+             remove matches from listOfAllPairs
+             else if position1 < listOfAllPairs.length-1
+             position1++
+             else if position2 < testArrayList.length-1
+             position1 = 0
+             position2 ++
+             else if matchRequired >1
+             matchRequired --
+             else
+             add a new row
+             position1 = 0
+             position2 ++   
+             */
+        int maxMatchRequired = 2;
+        int matchRequired = 2;
+        int matchesFound = 0;
+        String variableAdding, variableChecking;
+        while (!allPairsArrayList.isEmpty())
+        {
+            singleVariableAllPairsList = allPairsArrayList.remove(0);
+            while(!singleVariableAllPairsList.isEmpty())
+            {
+                figure out how to check for matches between singleVariableAllPairsList & allPairsArrayList
+            }
+        }
+        //output
     }//GEN-LAST:event_jButtonRunActionPerformed
 
     /**
