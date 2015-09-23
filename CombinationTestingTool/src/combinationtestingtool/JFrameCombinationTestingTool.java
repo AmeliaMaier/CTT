@@ -126,13 +126,29 @@ public class JFrameCombinationTestingTool extends javax.swing.JFrame
 
     private void jButtonRunActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButtonRunActionPerformed
     {//GEN-HEADEREND:event_jButtonRunActionPerformed
+
+        //Read in user input
         String userInput = this.jTextAreaTextInterface.getText();
+        //separate at line breaks (into array of variables with values)
         String[] rawUserInputArray = userInput.split("\\n");
         ArrayList<List<String>> variableList = new ArrayList<>();
         String variableName;
         String[] singleVariableInfoArray;
         String[] singleVariableValueArray;
         List<String> singleVariableOrganizedList = new ArrayList<String>();
+
+        /*
+         Separate by :
+         Before : is variable name
+         After : is all possible values
+         Separate second section by ,
+         Each value is a variable value
+         Each variable’s value should be save on separate ‘row’ that matches the placement of the variable’s name
+         End up with:
+         List of lists: each one has:  |variable name|value|value|value…
+         Sort the main list by length of inner lists, longest on top
+         Must copy values, not references
+        */
         for (String variable : rawUserInputArray)
         {
             singleVariableInfoArray = variable.split(":");
@@ -148,7 +164,7 @@ public class JFrameCombinationTestingTool extends javax.swing.JFrame
             {
                 singleVariableOrganizedList.set(x, singleVariableOrganizedList.get(x).trim());
             }
-            variableList.add(singleVariableOrganizedList);
+            variableList.add(singleVariableOrganizedList); pick up here - need to make deepCopy method(s)
         }
         //sort
         Collections.sort(variableList, new Comparator<List<String>>()
@@ -192,7 +208,7 @@ public class JFrameCombinationTestingTool extends javax.swing.JFrame
         testArrayList.add(rowForTestArrayList);
         rowForTestArrayList = new String[variableList.size()];
         //set all spaces in array to " " for future sorting needs
-        for(int x = 0; x < variableList.size(); x++)
+        for (int x = 0; x < variableList.size(); x++)
         {
             rowForTestArrayList[x] = " ";
         }
@@ -202,11 +218,11 @@ public class JFrameCombinationTestingTool extends javax.swing.JFrame
          */
         int variableListPosition = 1;
         int secondaryVariablePosition = 0;
-        List<String> variableAValuesList;        
-        List<String> variableBValuesList;        
+        List<String> variableAValuesList;
+        List<String> variableBValuesList;
         ArrayList<List> allPairsArrayList = new ArrayList<>();
         List<String> singleVariableAllPairsList = new ArrayList<String>();
-                
+
         while (variableListPosition < variableList.size())
         {
             variableBValuesList = variableList.get(variableListPosition);
@@ -215,16 +231,19 @@ public class JFrameCombinationTestingTool extends javax.swing.JFrame
             {
                 for (int y = 0; y < variableAValuesList.size(); y++)
                 {
-                    if(variableListPosition!=1){
-                    singleVariableAllPairsList.add(variableAValuesList.get(x) + "," + variableBValuesList.get(y));
-                    }else{
+                    if (variableListPosition != 1)
+                    {
+                        singleVariableAllPairsList.add(variableAValuesList.get(x) + "," + variableBValuesList.get(y));
+                    } else
+                    {
                         rowForTestArrayList[0] = variableAValuesList.get(x);
                         rowForTestArrayList[1] = variableBValuesList.get(y);
                         testArrayList.add(rowForTestArrayList);
                     }
                 }
             }
-            if(variableListPosition!=1){
+            if (variableListPosition != 1)
+            {
                 allPairsArrayList.add(singleVariableAllPairsList);
             }
             if (secondaryVariablePosition == 0)
@@ -243,25 +262,25 @@ public class JFrameCombinationTestingTool extends javax.swing.JFrame
          int matchRequired = 0; set matchRequired to # of variables before this variable*/
         int variableAPosition = 0;
         int variableBPosition = 0;
-        
+
         //if list not empty
         /*loop:
-             //for value of variable 2 at position1 in list, 
-             if matches found = matchRequired for position2 in testArrayList (note empty space  = match)
-             add value of variable 2 at position1 in list to testArrayList
-             remove matches from listOfAllPairs
-             else if position1 < listOfAllPairs.length-1
-             position1++
-             else if position2 < testArrayList.length-1
-             position1 = 0
-             position2 ++
-             else if matchRequired >1
-             matchRequired --
-             else
-             add a new row
-             position1 = 0
-             position2 ++   
-             */
+         //for value of variable 2 at position1 in list, 
+         if matches found = matchRequired for position2 in testArrayList (note empty space  = match)
+         add value of variable 2 at position1 in list to testArrayList
+         remove matches from listOfAllPairs
+         else if position1 < listOfAllPairs.length-1
+         position1++
+         else if position2 < testArrayList.length-1
+         position1 = 0
+         position2 ++
+         else if matchRequired >1
+         matchRequired --
+         else
+         add a new row
+         position1 = 0
+         position2 ++   
+         */
         int maxMatchRequired = 2;
         int matchRequired = 2;
         int matchesFound = 0;
@@ -269,9 +288,12 @@ public class JFrameCombinationTestingTool extends javax.swing.JFrame
         while (!allPairsArrayList.isEmpty())
         {
             singleVariableAllPairsList = allPairsArrayList.remove(0);
-            while(!singleVariableAllPairsList.isEmpty())
+            while (!singleVariableAllPairsList.isEmpty())
             {
-                figure out how to check for matches between singleVariableAllPairsList & allPairsArrayList
+                figure out how to check for matches between  singleVariableAllPairsList & allPairsArrayList
+                {
+                    
+                }
             }
         }
         //output
