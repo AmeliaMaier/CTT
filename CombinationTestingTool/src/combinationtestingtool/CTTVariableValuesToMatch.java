@@ -9,15 +9,7 @@ package combinationtestingtool;
  *
  * @author Lia
  */
-public class CombinationTestingTool
+public class CTTVariableValuesToMatch
 {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args)
-    {
-        // TODO code application logic here
-    }
     
 }
