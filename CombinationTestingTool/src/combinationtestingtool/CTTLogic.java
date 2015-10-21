@@ -72,7 +72,7 @@ public class CTTLogic
         }
     }
 
-    /* will need to be edited to work for nth value sorting*/
+    /* will need to be edited to work for nth value sorting
     private void FillFirstTwoColumns(List<CTTTestCaseObject> testCasesFullList, CTTVariableObject[] cttVariableObjectsArray)
     {
         for (int firstVariable = 0; firstVariable < cttVariableObjectsArray[0].GetNumberOfValues(); firstVariable++)
@@ -84,6 +84,43 @@ public class CTTLogic
                 testCasesFullList.get(testCasesFullList.size()-1).SetValue(1, cttVariableObjectsArray[1].GetValue(secondVariable));
 
             }
+        }
+    }*/
+    /*possible replacemnet for above
+    will list all possible combinations of variables*/
+    private void FillNthColumns(int nth, List<CTTTestCaseObject> testCasesFullList, CTTVariableObject[] cttVariableObjectsArray)
+    {
+        int size = 0;
+        for(int x = nth - 1; x>=0; x--)
+        {
+            if(testCasesFullList.size() == 1)
+            {
+                for(int y = 0; y < cttVariableObjectsArray[x].GetNumberOfValues(); y++)
+                {
+                    testCasesFullList.add(new CTTTestCaseObject(cttVariableObjectsArray.length));
+                    testCasesFullList.get(y+1).SetValue(x, cttVariableObjectsArray[x].GetValue(y));
+                }
+            }else
+            {
+                for(int y = 0; y<cttVariableObjectsArray[x].GetNumberOfValues(); y++)
+                {
+                    size = testCasesFullList.size();
+                    for(int z = 0; z < size; z++)
+                    {
+                        DuplicateRow(z, testCasesFullList);
+                        testCasesFullList.get(y+1).SetValue(x, cttVariableObjectsArray[x].GetValue(y));
+                    }
+                }
+            }
+        }
+    }
+    
+    private void DuplicateRow(int location, List<CTTTestCaseObject> testCasesFullList)
+    {
+        testCasesFullList.add(new CTTTestCaseObject(testCasesFullList.get(location).GetNumberOfValues()));
+        for(int x = 0; x < testCasesFullList.get(location).GetNumberOfValues(); x++)
+        {
+            testCasesFullList.get(testCasesFullList.size()-1).SetValue(x, testCasesFullList.get(location).GetValue(x));
         }
     }
 

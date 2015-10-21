@@ -26,4 +26,9 @@ public class CTTTestCaseObject
     {
         return this.testCaseValues[location];
     }
+    
+    public int GetNumberOfValues()
+    {
+        return this.testCaseValues.length;
+    }
 }
