@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class CTTLogic
 {
-
+    int caseLocation;
     /**
      * @param args the command line arguments
      */
@@ -25,7 +25,11 @@ public class CTTLogic
 
     public String[][] Solve(String userInput)
     {
+        int nth = 2; //temp hard code since no other option at the moment
+        int numMatchesRequired;
+        int[] matchLocationsArray;
         String[][] systemOutput;
+        List<CTTVariableValuesToMatch> matchesNeededList = new ArrayList<>();
         List<CTTTestCaseObject> testCasesFullList = new ArrayList<>();
         String[] rawUserInputArray = userInput.split("\\n");
         CTTVariableObject[] cttVariableObjectsArray = new CTTVariableObject[rawUserInputArray.length];
@@ -35,7 +39,35 @@ public class CTTLogic
         }
         SortArray(cttVariableObjectsArray);
         FillVariableNames(cttVariableObjectsArray, testCasesFullList);
-        FillFirstTwoColumns(testCasesFullList, cttVariableObjectsArray);
+        FillNthColumns(nth, testCasesFullList, cttVariableObjectsArray);
+        for (int variableLocation = nth; variableLocation < cttVariableObjectsArray.length; variableLocation++)
+        {
+            for (int valueLocation = 0; valueLocation < cttVariableObjectsArray[variableLocation].GetNumberOfValues(); valueLocation++)
+            {
+                FillMatchesNeeded(matchesNeededList, cttVariableObjectsArray, variableLocation);
+                numMatchesRequired = variableLocation;
+                this.caseLocation = 1;
+                matchLocationsArray = new int[variableLocation];
+                while(!matchesNeededList.isEmpty())
+                {
+                    if(this.caseLocation == 1)
+                    {
+                        while(!AnswerFound(variableLocation, matchLocationsArray, matchesNeededList, numMatchesRequired, testCasesFullList))
+                        {
+                            numMatchesRequired = MakeEasier(numMatchesRequired, testCasesFullList, variableLocation, cttVariableObjectsArray.length);
+                        }
+                    }else if(!AnswerFound(variableLocation, matchLocationsArray, matchesNeededList, numMatchesRequired, testCasesFullList))
+                    {
+                        while(!AnswerFound(variableLocation, matchLocationsArray, matchesNeededList, numMatchesRequired, testCasesFullList))
+                        {
+                            numMatchesRequired = MakeEasier(numMatchesRequired, testCasesFullList, variableLocation, cttVariableObjectsArray.length);
+                        }
+                    }
+                    AddTestValue(matchesNeededList, testCasesFullList, matchLocationsArray, cttVariableObjectsArray[variableLocation].GetValue(valueLocation));
+                    CleanMatchesNeeded(matchesNeededList);
+                }
+            }
+        }
         return systemOutput;
     }
 
@@ -73,55 +105,150 @@ public class CTTLogic
     }
 
     /* will need to be edited to work for nth value sorting
-    private void FillFirstTwoColumns(List<CTTTestCaseObject> testCasesFullList, CTTVariableObject[] cttVariableObjectsArray)
-    {
-        for (int firstVariable = 0; firstVariable < cttVariableObjectsArray[0].GetNumberOfValues(); firstVariable++)
-        {
-            for (int secondVariable = 0; secondVariable < cttVariableObjectsArray[1].GetNumberOfValues(); secondVariable++)
-            {
-                testCasesFullList.add(new CTTTestCaseObject(cttVariableObjectsArray.length));
-                testCasesFullList.get(testCasesFullList.size()-1).SetValue(0, cttVariableObjectsArray[0].GetValue(firstVariable));
-                testCasesFullList.get(testCasesFullList.size()-1).SetValue(1, cttVariableObjectsArray[1].GetValue(secondVariable));
+     private void FillFirstTwoColumns(List<CTTTestCaseObject> testCasesFullList, CTTVariableObject[] cttVariableObjectsArray)
+     {
+     for (int firstVariable = 0; firstVariable < cttVariableObjectsArray[0].GetNumberOfValues(); firstVariable++)
+     {
+     for (int secondVariable = 0; secondVariable < cttVariableObjectsArray[1].GetNumberOfValues(); secondVariable++)
+     {
+     testCasesFullList.add(new CTTTestCaseObject(cttVariableObjectsArray.length));
+     testCasesFullList.get(testCasesFullList.size()-1).SetValue(0, cttVariableObjectsArray[0].GetValue(firstVariable));
+     testCasesFullList.get(testCasesFullList.size()-1).SetValue(1, cttVariableObjectsArray[1].GetValue(secondVariable));
 
-            }
-        }
-    }*/
+     }
+     }
+     }*/
     /*possible replacemnet for above
-    will list all possible combinations of variables*/
+     will list all possible combinations of variables*/
     private void FillNthColumns(int nth, List<CTTTestCaseObject> testCasesFullList, CTTVariableObject[] cttVariableObjectsArray)
     {
         int size = 0;
-        for(int x = nth - 1; x>=0; x--)
+        for (int x = nth - 1; x >= 0; x--)
         {
-            if(testCasesFullList.size() == 1)
+            if (testCasesFullList.size() == 1)
             {
-                for(int y = 0; y < cttVariableObjectsArray[x].GetNumberOfValues(); y++)
+                for (int y = 0; y < cttVariableObjectsArray[x].GetNumberOfValues(); y++)
                 {
                     testCasesFullList.add(new CTTTestCaseObject(cttVariableObjectsArray.length));
-                    testCasesFullList.get(y+1).SetValue(x, cttVariableObjectsArray[x].GetValue(y));
+                    testCasesFullList.get(y + 1).SetValue(x, cttVariableObjectsArray[x].GetValue(y));
                 }
-            }else
+            } else
             {
-                for(int y = 0; y<cttVariableObjectsArray[x].GetNumberOfValues(); y++)
+                for (int y = 0; y < cttVariableObjectsArray[x].GetNumberOfValues(); y++)
                 {
                     size = testCasesFullList.size();
-                    for(int z = 0; z < size; z++)
+                    for (int z = 0; z < size; z++)
                     {
                         DuplicateRow(z, testCasesFullList);
-                        testCasesFullList.get(y+1).SetValue(x, cttVariableObjectsArray[x].GetValue(y));
+                        testCasesFullList.get(y + 1).SetValue(x, cttVariableObjectsArray[x].GetValue(y));
                     }
                 }
             }
         }
     }
-    
+
     private void DuplicateRow(int location, List<CTTTestCaseObject> testCasesFullList)
     {
         testCasesFullList.add(new CTTTestCaseObject(testCasesFullList.get(location).GetNumberOfValues()));
-        for(int x = 0; x < testCasesFullList.get(location).GetNumberOfValues(); x++)
+        for (int x = 0; x < testCasesFullList.get(location).GetNumberOfValues(); x++)
         {
-            testCasesFullList.get(testCasesFullList.size()-1).SetValue(x, testCasesFullList.get(location).GetValue(x));
+            testCasesFullList.get(testCasesFullList.size() - 1).SetValue(x, testCasesFullList.get(location).GetValue(x));
         }
     }
 
+    private void FillMatchesNeeded(List<CTTVariableValuesToMatch> matchesNeededList, CTTVariableObject[] cttVariableObjectsArray, int variableLocation)
+    {
+        matchesNeededList = new ArrayList<>();
+        for(int x = 0; x < variableLocation; x++)
+        {
+            matchesNeededList.add(new CTTVariableValuesToMatch());
+            for(int y = 0; y < cttVariableObjectsArray[x].GetNumberOfValues(); y++)
+            {
+                matchesNeededList.get(x).AddValue(cttVariableObjectsArray[x].GetValue(y));
+            }
+        }
+    }
+    
+    private boolean AnswerFound(int variableLocation, int[] matchLocationsArray,List<CTTVariableValuesToMatch> matchesNeededList,int numMatchesRequired, List<CTTTestCaseObject> testCasesFullList)
+    {
+        matchLocationsArray = new int[variableLocation];
+        for(int x = 0; x < variableLocation; x++)
+        {
+            matchLocationsArray[x] = -1; //initilizes with 0, 0 valid entry, changed to invalid entry for control reasons
+        }
+        while(caseLocation<testCasesFullList.size() && GetCount(matchLocationsArray)< numMatchesRequired)
+        {
+            if(testCasesFullList.get(caseLocation).GetValue(matchesNeededList.size()) == null)
+            {
+                if(null == testCasesFullList.get(this.caseLocation).GetValue(matchesNeededList.size()-1) || 
+                        matchesNeededList.get(matchesNeededList.size()-1).GetValue(0).equals(testCasesFullList.get(this.caseLocation).GetValue(matchesNeededList.size()-1)))
+                {
+                    for(int x = matchesNeededList.size() - 2; x >= 0; x--)
+                    {
+                        if(matchesNeededList.get(x).ContainsValue(testCasesFullList.get(this.caseLocation).GetValue(x)))
+                        {
+                            matchLocationsArray[x] = matchesNeededList.get(x).GetLocation(testCasesFullList.get(this.caseLocation).GetValue(x));
+                        }else
+                        {
+                            matchLocationsArray[x] = -1;
+                        }
+                    }
+                }
+            }
+        }
+        return GetCount(matchLocationsArray)>= numMatchesRequired;
+    }
+    
+    private int GetCount(int [] matchLocationsArray)
+    {
+        int count = 0; 
+        for(int x = 0; x < matchLocationsArray.length; x++)
+        {
+            if(matchLocationsArray[x] != -1)
+            {
+                count = count + 1; 
+            }
+        }
+        return count; 
+    }
+    
+    private int MakeEasier(int numMatchesRequired, List<CTTTestCaseObject> testCasesFullList, int maxMatchesRequired, int length)
+    {
+        if(numMatchesRequired != 1)
+        {
+            numMatchesRequired = numMatchesRequired -1; 
+        }else
+        {
+            testCasesFullList.add(new CTTTestCaseObject(length));
+            numMatchesRequired = maxMatchesRequired;
+        }
+        return numMatchesRequired;
+    }
+    
+    private void AddTestValue(List<CTTVariableValuesToMatch> matchesNeededList,List<CTTTestCaseObject> testCasesFullList, int[] matchLocationsArray,String currentVariableValue)
+    {
+        testCasesFullList.get(this.caseLocation).SetValue(matchLocationsArray.length, currentVariableValue);
+        for(int x = matchLocationsArray.length-1; x>= 0; x--)
+        {
+            if(testCasesFullList.get(this.caseLocation).GetValue(x) == null && matchLocationsArray[x]!= -1)
+            {
+                testCasesFullList.get(this.caseLocation).SetValue(x, matchesNeededList.get(x).GetValue(matchLocationsArray[x]));
+                matchesNeededList.get(x).RemoveValue(matchLocationsArray[x]);
+            }
+        }
+    }
+
+    private void CleanMatchesNeeded(List<CTTVariableValuesToMatch> matchesNeededList)
+    {
+        for(int x = matchesNeededList.size()-1; x>=0; x--)
+        {
+            if(matchesNeededList.get(x).IsEmpty())
+            {
+                matchesNeededList.remove(x);
+            }else
+            {
+                break;
+            }
+        }
+    }
 }
