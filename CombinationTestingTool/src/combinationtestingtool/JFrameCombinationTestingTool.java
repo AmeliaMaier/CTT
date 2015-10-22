@@ -127,13 +127,9 @@ public class JFrameCombinationTestingTool extends javax.swing.JFrame
     private void jButtonRunActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButtonRunActionPerformed
     {//GEN-HEADEREND:event_jButtonRunActionPerformed
         CTTLogic logic = new CTTLogic(); 
-        String [][] testCasesOutput;
         //Read in user input
-        String userInput = this.jTextAreaTextInterface.getText();
         //pass to logic for organization. Recieve back output needed
-        testCasesOutput = logic.Solve(userInput);
-        
-
+        this.jTextAreaTextInterface.setText(logic.Solve(this.jTextAreaTextInterface.getText()));
         //output
     }//GEN-LAST:event_jButtonRunActionPerformed
 

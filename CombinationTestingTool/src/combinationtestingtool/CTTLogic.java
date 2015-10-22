@@ -23,12 +23,12 @@ public class CTTLogic
         // TODO code application logic here
     }
 
-    public String[][] Solve(String userInput)
+    public String Solve(String userInput)
     {
         int nth = 2; //temp hard code since no other option at the moment
         int numMatchesRequired;
         int[] matchLocationsArray;
-        String[][] systemOutput;
+        String systemOutput = "";
         List<CTTVariableValuesToMatch> matchesNeededList = new ArrayList<>();
         List<CTTTestCaseObject> testCasesFullList = new ArrayList<>();
         String[] rawUserInputArray = userInput.split("\\n");
@@ -68,6 +68,15 @@ public class CTTLogic
                 }
             }
         }
+        
+        for(int testCaseNumber = 0; testCaseNumber < testCasesFullList.size(); testCaseNumber ++)
+        {
+            for(int testValue = 0; testValue < cttVariableObjectsArray.length; testValue ++)
+            {
+                systemOutput = systemOutput + testCasesFullList.get(testCaseNumber).GetValue(testValue) + ", ";
+            }
+            systemOutput = systemOutput + "\n";
+        }   
         return systemOutput;
     }
 
