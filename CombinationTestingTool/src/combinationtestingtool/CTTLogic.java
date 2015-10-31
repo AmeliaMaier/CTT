@@ -146,9 +146,12 @@ public class CTTLogic
                 for (int y = 0; y < cttVariableObjectsArray[x].GetNumberOfValues(); y++)
                 {
                     size = testCasesFullList.size();
-                    for (int z = 0; z < size; z++)
+                    for (int z = 1; z < size; z++)
                     {
+                        if(y != cttVariableObjectsArray[x].GetNumberOfValues()-1)
+                        {
                         DuplicateRow(z, testCasesFullList);
+                        }
                         testCasesFullList.get(y + 1).SetValue(x, cttVariableObjectsArray[x].GetValue(y));
                     }
                 }
