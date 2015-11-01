@@ -32,4 +32,8 @@ public class CTTTestCaseObject
         return this.testCaseValues.length;
     }
     
+    public boolean IsNull(int location)
+    {
+        return this.testCaseValues[location] == null;
+    }     
 }

@@ -196,9 +196,9 @@ public class CTTLogic
         }
         while (caseLocation < testCasesFullList.size() && GetCount(matchLocationsArray) < numMatchesRequired)
         {
-            if (testCasesFullList.get(caseLocation).GetValue(matchesNeededList.size()) == null)
+            if (testCasesFullList.get(caseLocation).IsNull(matchesNeededList.size()))
             {
-                if (null == testCasesFullList.get(this.caseLocation).GetValue(matchesNeededList.size() - 1)
+                if (testCasesFullList.get(this.caseLocation).IsNull(matchesNeededList.size() - 1)
                         || matchesNeededList.get(matchesNeededList.size() - 1).GetValue(0).equals(testCasesFullList.get(this.caseLocation).GetValue(matchesNeededList.size() - 1)))
                 {
                     for (int x = matchesNeededList.size() - 2; x >= 0; x--)
@@ -248,7 +248,7 @@ public class CTTLogic
         testCasesFullList.get(this.caseLocation).SetValue(matchLocationsArray.length, currentVariableValue);
         for (int x = matchLocationsArray.length - 1; x >= 0; x--)
         {
-            if (testCasesFullList.get(this.caseLocation).GetValue(x) == null && matchLocationsArray[x] != -1)
+            if (testCasesFullList.get(this.caseLocation).IsNull(x) && matchLocationsArray[x] != -1)
             {
                 testCasesFullList.get(this.caseLocation).SetValue(x, matchesNeededList.get(x).GetValue(matchLocationsArray[x]));
                 matchesNeededList.get(x).RemoveValue(matchLocationsArray[x]);
