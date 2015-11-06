@@ -11,20 +11,24 @@ package combinationtestingtool;
  */
 public class CTTTestCaseObject
 {
-    String[] testCaseValues;
+    CTTVariableTestValue[] testCaseValues;
     CTTTestCaseObject(int length)
     {
-        this.testCaseValues = new String[length];
+        this.testCaseValues = new CTTVariableTestValue[length];
+        for(int x = 0; x < length; x++)
+        {
+            this.testCaseValues[x] = new CTTVariableTestValue();
+        }
     }
     
     public void SetValue(int location, String value)
     {
-        this.testCaseValues[location] = value;
+        this.testCaseValues[location].SetValue(value);
     }
     
     public String GetValue(int location)
     {
-        return this.testCaseValues[location];
+        return this.testCaseValues[location].GetValue();
     }
     
     public int GetNumberOfValues()
@@ -34,6 +38,12 @@ public class CTTTestCaseObject
     
     public boolean IsNull(int location)
     {
-        return this.testCaseValues[location] == null;
-    }     
+        return !this.testCaseValues[location].IsSet();
+    }  
+    
+    public boolean IsSet(int location)
+    {
+        return this.testCaseValues[location].IsSet();
+    }
+            
 }
