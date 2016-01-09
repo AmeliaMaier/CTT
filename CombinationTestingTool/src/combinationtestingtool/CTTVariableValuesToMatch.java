@@ -14,37 +14,48 @@ import java.util.List;
  */
 public class CTTVariableValuesToMatch
 {
+
     List<String> values;
+    List<Boolean> status;
+
     CTTVariableValuesToMatch()
     {
-       this.values = new ArrayList<>(); 
+        this.values = new ArrayList<>();
+        this.status = new ArrayList<>();
     }
-    
+
     public void AddValue(String value)
     {
         this.values.add(value);
+        this.status.add(true);
     }
-    
+
     public void RemoveValue(int location)
     {
-        this.values.remove(location);
+        this.status.set(location, false);
     }
-    
+
     public boolean ContainsValue(String value)
     {
-        return this.values.contains(value);
+        if (this.values.contains(value))
+        {
+            return this.status.get(values.indexOf(value));
+        } else
+        {
+            return false;
+        }
     }
-    
-    public int GetLocation (String value)
+
+    public int GetLocation(String value)
     {
         return this.values.indexOf(value);
     }
-    
+
     public String GetValue(int location)
     {
         return this.values.get(location);
     }
-    
+
     public boolean IsEmpty()
     {
         return values.isEmpty();
